@@ -4,8 +4,8 @@
 
 using namespace std;
 
-bool lost(int x0,int x1){
-    return x1>x0 and 0<x1;
+bool lost( int x0, int x1){
+    return x1>x0 or 0>x1;
 }
 void change(char &orientacion, char w, char x, char y, char z){
     switch (orientacion){
@@ -37,37 +37,48 @@ int main(){
     while(cin>>x1>>y1>>orientacion>>direcciones){
         islostx = false, islosty = false;
         for (char & direccion : direcciones) {
-            switch (direccion){
-                case 'F':
+            if(!islostx and !islosty){
+                switch (direccion){
+                    case 'F':
                         switch (orientacion){
                             case 'N':
                                 y1=y1+1;
                                 islosty = lost(y0,y1);
                                 break;
                             case 'S':
-                                y1=y1-1;
-                                islosty = lost(y0,y1);
+                                if(lost(y0,y1-1)){
+                                    islosty = lost(y0,y1-1);
+                                    y1=1;
+                                }else{
+                                    y1=y1-1;
+                                    islosty = lost(y0,y1);
+                                }
                                 break;
                             case 'E':
                                 x1=x1+1;
                                 islostx = lost(x0,x1);
                                 break;
                             case 'W':
-                                x1=x1-1;
-                                islostx = lost(x0,x1);
-                                break;
+                                if(lost(x0,x1-1)){
+                                    islostx = lost(x0,x1-1);
+                                    x1=1;
+                                }else{
+                                    x1=x1-1;
+                                    islostx = lost(x0,x1);
+                                }
                             default:
                                 break;
                         }
-                    break;
-                case 'R':
-                    change(orientacion,'E','W','S','N');
-                    break;
-                case 'L':
-                    change(orientacion,'W','E','N','S');
-                    break;
-                default:
-                    break;
+                        break;
+                    case 'R':
+                        change(orientacion,'E','W','S','N');
+                        break;
+                    case 'L':
+                        change(orientacion,'W','E','N','S');
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         if (islostx or islosty){
